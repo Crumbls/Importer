@@ -1,10 +1,21 @@
 # Filament Importer
-The whole goal of this package is to allow document importing.  We focus on CSVs.  Although this can be done without Filament, we use it extensively and wanted to create a nice interface for it.
+The whole goal of this package is to allow document importing.  We focus on CSVs, but will be adding XML and WPML.  
+Although this can be done without Filament, we use it extensively and wanted to create a nice interface for it.  
+We use a manager pattern, like Laravel's filesystem, so the system can be extended or modified. 
 
-The system works by creating an importer, attaching said documents, then running the parser as a job against it.
+The whole system works in a pretty simple way:
+1) Create a new entry via the Import model.  Attached document is handled by Spatie's Media Library.
+2) Execute Import Job.
+3) Right now, you can just use the imported data from those models.  It lives in the content.
 
-This is a very early version just used for brainstorming.  It is not anywhere near production ready and should be considered an early beta.
 
+# This is a very early version just used for brainstorming.  It is not anywhere near production ready and should be considered an early beta.
+# It is the absolute first release and hasn't had a single bit of code auditing.
+
+## Roadmap
+Lots of testing.
+Imports to model / migration creation.
+Alerts for active user.
 
 
 ## Installation
