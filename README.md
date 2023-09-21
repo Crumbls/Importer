@@ -25,6 +25,7 @@ You can install the package via composer:
 ```bash
 composer require crumbls/importer
 php artisan migrate
+Add \Crumbls\Importer\ImporterPlugin to your Plugins in any Filament Panel Provider.
 ```
 
 If you are in a multi-tenant environment and need to use something other than an unsigned big integer ( 20 ) for the key, write a migration.
