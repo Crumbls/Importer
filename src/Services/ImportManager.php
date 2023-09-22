@@ -3,6 +3,7 @@
 namespace Crumbls\Importer\Services;
 
 use Closure;
+use Crumbls\Importer\Drivers\Csv;
 use Crumbls\Importer\Exceptions\UnknownEncoding;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Manager;
@@ -64,5 +65,41 @@ class ImportManager extends Manager
 			return isset($ex[1]) ? $ex[1] : null;
 		}
 		throw new UnknownEncoding();
+	}
+
+
+	/**
+	 * Register a custom driver creator Closure.
+	 *
+	 * @param  string  $driver
+	 * @param  \Closure  $callback
+	 * @return $this
+	 */
+	public function extend($driver, Closure $callback)
+	{
+		$this->customCreators[$driver] = $callback;
+
+		return $this;
+	}
+
+	public function getSupportedMimeTypes() : array {
+
+		$mimeTypes = array_merge(
+			call_user_func_array('array_merge',
+				array_map(function ($driver) {
+					return $this->callDriver($driver)->getSupportedMimeTypes();
+				}, array_keys($this->drivers)
+				)
+			),
+			call_user_func_array('array_merge',
+				array_map(function ($driver) {
+					return $this->callCustomCreator($driver)->getSupportedMimeTypes();
+				}, array_keys($this->customCreators)
+				)
+			)
+		);
+		$mimeTypes = array_unique($mimeTypes);
+		sort($mimeTypes);
+		return $mimeTypes;
 	}
 }

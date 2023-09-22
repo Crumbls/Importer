@@ -44,5 +44,18 @@ abstract class AbstractDriver {
 	 */
 	abstract public function supports(AbstractImport $model, Media $file) : bool;
 
+	/**
+	 * Get our media.
+	 * @param Media $media
+	 * @param array $settings
+	 * @return array
+	 */
 	abstract public function media(Media $media, array $settings = []) : array;
+
+	/**
+	 * Get our supported mime types.
+	 * @return string[]
+	 */
+	abstract public function getSupportedMimeTypes() : array;
+
 }

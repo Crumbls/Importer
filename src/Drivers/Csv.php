@@ -30,69 +30,6 @@ class Csv extends AbstractDriver {
 	protected string $enclosure = '"';
 
 	/**
-	 * An unorthodox way to text against random files.
-	 * @throws \Exception
-	 */
-	public function test() {
-
-		Import::where('status','<>','pending')
-			->where('status','<>','imported')
-			->get()->each(function($e) {
-//			$e->delete();
-		});
-
-		$import = Import::where('status','<>','imported')->inRandomOrder()->take(1)->first();
-
-		$import = Import::find(94);
-
-		if (!$import) {
-			$files = [
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/addresses.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/airtravel.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/biostats.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/cities.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/crash_catalonia.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/deniro.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/example.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/ford_escort.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/faithful.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/freshman_kgs.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/freshman_lbs.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/grades.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/homes.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/hooke.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/hurricanes.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/hw_200.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/hw_25000.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/lead_shot.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/letter_frequency.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/mlb_players.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/mlb_teams_2012.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/news_decline.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/nile.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/oscar_age_female.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/oscar_age_male.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/snakes_count_10.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/snakes_count_100.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/snakes_count_1000.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/snakes_count_10000.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/tally_cab.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/taxables.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/trees.csv',
-				'https://people.sc.fsu.edu/~jburkardt/data/csv/zillow.csv',
-			];
-			$file = \Arr::random($files);
-
-			$import = new Import();
-			$import->save();
-			$import->addMediaFromUrl($file)->toMediaCollection();
-
-		}
-		\Crumbls\Importer\Jobs\ProcessImport::dispatchSync($import);
-
-	}
-
-	/**
 	 * Get our delimiter
 	 * @return string
 	 */
@@ -277,7 +214,15 @@ class Csv extends AbstractDriver {
 	 */
 	public function supports(AbstractImport $model, Media $file): bool
 	{
-		return in_array($file->mime_type, ['text/csv', 'text/plain']);
+		return in_array($file->mime_type, $this->getSupportedMimeTypes());
+	}
+
+	/**
+	 * Get our supported mime types.
+	 * @return string[]
+	 */
+	public function getSupportedMimeTypes() : array {
+		return ['text/csv', 'text/plain'];
 	}
 
 	/**
